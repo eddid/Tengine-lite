@@ -30,7 +30,7 @@
 #include <stdlib.h>
 
 #ifdef CONFIG_ARCH_CORTEX_M
-char* strdup(const char*);
+//char* strdup(const char*);
 #else
 #include <malloc.h>
 #endif

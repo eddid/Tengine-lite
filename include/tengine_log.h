@@ -93,6 +93,27 @@ extern struct logger* get_default_logger(void);
         logger->prefix = prefix;                      \
     } while(0)
 
+#if (defined(_MSC_VER) && (_MSC_VER >= 1400)) || defined(MINGW) || defined(__MINGW32__) || defined(__BORLANDC__)
+#define LOG(level, fmt, ...)                   \
+    do                                                \
+    {                                                 \
+        struct logger* logger = get_default_logger(); \
+        logger->log(logger, level, fmt, __VA_ARGS__);   \
+    } while(0)
+
+#define TLOG_EMERG(fmt, ...) LOG(LOG_EMERG, fmt, __VA_ARGS__)
+#define TLOG_ALERT(fmt, ...) LOG(LOG_ALERT, fmt, __VA_ARGS__)
+#define TLOG_CRIT(fmt, ...) LOG(LOG_CRIT, fmt, __VA_ARGS__)
+#define TLOG_ERR(fmt, ...) LOG(LOG_ERR, fmt, __VA_ARGS__)
+#define TLOG_WARNING(fmt, ...) LOG(LOG_WARNING, fmt, __VA_ARGS__)
+#define TLOG_NOTICE(fmt, ...) LOG(LOG_NOTICE, fmt, __VA_ARGS__)
+#define TLOG_INFO(fmt, ...) LOG(LOG_INFO, fmt, __VA_ARGS__)
+#define TLOG_DEBUG(fmt, ...) LOG(LOG_DEBUG, fmt, __VA_ARGS__)
+
+#define XLOG(level, fmt, ...)          \
+    LOG(level, "%s:%d ", __FILE__, __LINE__); \
+    LOG(level, fmt, __VA_ARGS__)
+#else
 #define LOG(level, fmt, content...)                   \
     do                                                \
     {                                                 \
@@ -112,6 +133,7 @@ extern struct logger* get_default_logger(void);
 #define XLOG(level, fmt, content...)          \
     LOG(level, "%s:%d ", __FILE__, __LINE__); \
     LOG(level, fmt, ##content)
+#endif
 
 #ifdef __cplusplus
 }
